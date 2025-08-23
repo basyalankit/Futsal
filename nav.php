@@ -1,3 +1,5 @@
+<?php session_start(); ?>
+
 <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
@@ -40,19 +42,29 @@
                     <a class="nav-link me-2" href="facility.php">Facilities</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link me-2" href="#">Contact us</a>
+                    <a class="nav-link me-2" href="Contact.php">Contact us</a>
                 </li>
             </ul>
 
+            <?php if (isset($_SESSION['user_id'])): ?>
+                <form action="logout.php">
+                    <button type="submit" class="btn btn-outline-dark shadow-none me-lg-3 me-2">
+                        Logout
+                    </button>
+                </form>
+            <?php else: ?>
 
-            <div class="d-flex">
-                <button type="button" class="btn btn-outline-dark shadow-none me-lg-3 me-2" data-bs-toggle="modal" data-bs-target="#loginModal">
-                    Login
-                </button>
-                <button type="button" class="btn btn-outline-dark shadow-none" data-bs-toggle="modal" data-bs-target="#registerModal">
-                    Register
-                </button>
-            </div>
+                <div class="d-flex">
+                    <button type="button" class="btn btn-outline-dark shadow-none me-lg-3 me-2" data-bs-toggle="modal" data-bs-target="#loginModal">
+                        Login
+                    </button>
+                    <button type="button" class="btn btn-outline-dark shadow-none" data-bs-toggle="modal" data-bs-target="#registerModal">
+                        Register
+                    </button>
+                </div>
+            <?php endif; ?>
         </div>
+
+
     </div>
 </nav>

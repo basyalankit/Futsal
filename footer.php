@@ -9,7 +9,7 @@
             border-radius: 60%;
             border: 2px solid #fd0202ff;
             margin-right: 20px;
-            
+
         }
 
         footer p {
@@ -23,28 +23,33 @@
         <div class="row">
 
 
-            <div class="col-12 col-lg-4">
-                <div class="d-flex align-items-center mb-2">
-                    <img src="image/logo.JPG" class="logo ">
-                    <h3 class="mb-0">Bhairav Futsal Booking System</h3>
-                </div>
-                <p>
-                    A Futsal Booking System is a digital platform (web or mobile app) that allows players, teams, or futsal enthusiasts to easily book futsal courts online instead of calling or visiting physically.
+            <div class="col-12 col-lg-4 d-flex">
+                <img src="image/logo.JPG " class="logo " style="flex-shrink: 0;">
+                <div>
 
-                    It helps futsal arena owners manage schedules, avoid double-bookings, and provide a smoother experience to customers.
-                </p>
+                    <h3 class="mb-3">Bhairav Futsal Booking System</h3>
+                    <p>
+                        A Futsal Booking System is a digital platform (web or mobile app) that allows players, teams, or futsal enthusiasts to easily book futsal courts online instead of calling or visiting physically.
+
+                        It helps futsal arena owners manage schedules, avoid double-bookings, and provide a smoother experience to customers.
+                    </p>
+                </div>
+
             </div>
 
 
-            <div class="col-12 col-lg-5 text-lg-center">
-                <h4 class="pt-4">Contact Us</h4>
-                <p>9840610415 • basyalankit05@gmail.com</p>
-                <p class="mb-0">984-9980433 • sohailkhadgi2004@gmail.com</p>
+            <div class="col-12 col-lg-5 d-flex">
+                <div class="mx-auto">
+                    <h3>Contact Us</h3>
+                    <p class="mb-0">9840610415 • basyalankit05@gmail.com</p>
+                    <p class="mb-0">984-9980433 • sohailkhadgi2004@gmail.com</p>
+                </div>
+
             </div>
 
 
             <div class="col-12 col-lg-3 text-lg-end">
-                <h4 class="pt-4">Social Media</h4>
+                <h4>Social Media</h4>
                 <div>
                     <a href="#" class="text-decoration-none text-light"><i class="bi bi-instagram fs-2 me-3"></i></a>
                     <a href="#" class="text-decoration-none text-light"><i class="bi bi-facebook fs-2 me-3"></i></a>

@@ -32,14 +32,11 @@
 </head>
 
 <body>
-
     <?php require "nav.php"; ?>
-
-
     <div class="container">
         <div class="row">
 
-            
+
             <div class="col-lg-4 col-md-6 my-3">
                 <div class="card border-0 shadow">
                     <img src="image/bhak.jpg" class="card-img-top" alt="Futsal Ground">
@@ -50,12 +47,12 @@
                             target="_blank" class="btn btn-primary btn-sm">
                             <i class="bi bi-geo-alt-fill"></i> View on Map
                         </a>
-                       
+
                     </div>
                 </div>
             </div>
 
-        
+
             <div class="col-lg-4 col-md-6 my-3">
                 <div class="card border-0 shadow">
                     <img src="image/ground1.jpg" class="card-img-top" alt="Futsal Ground">
@@ -65,7 +62,7 @@
                         <a href="https://www.google.com/maps?Kathmandu 44600" target="_blank" class="btn btn-primary btn-sm">
                             <i class="bi bi-geo-alt-fill"></i> View on Map
                         </a>
-                       
+
                     </div>
                 </div>
             </div>
@@ -79,7 +76,7 @@
                             target="_blank" class="btn btn-primary btn-sm">
                             <i class="bi bi-geo-alt-fill"></i> View on Map
                         </a>
-                       
+
                     </div>
                 </div>
             </div>
@@ -94,7 +91,7 @@
                             target="_blank" class="btn btn-primary btn-sm">
                             <i class="bi bi-geo-alt-fill"></i> View on Map
                         </a>
-                       
+
                     </div>
                 </div>
             </div>
@@ -109,7 +106,7 @@
                             target="_blank" class="btn btn-primary btn-sm">
                             <i class="bi bi-geo-alt-fill"></i> View on Map
                         </a>
-                       
+
                     </div>
                 </div>
             </div>
@@ -124,7 +121,7 @@
                             target="_blank" class="btn btn-primary btn-sm">
                             <i class="bi bi-geo-alt-fill"></i> View on Map
                         </a>
-                       
+
                     </div>
                 </div>
             </div>
