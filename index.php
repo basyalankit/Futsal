@@ -1,4 +1,12 @@
-<?php require "conn.php"; ?>
+<?php
+session_start();
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit();
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -48,7 +56,11 @@
 
     <?php require "nav.php"; ?>
 
-    <div class="modal fade" id="loginModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+
+    <h2>Welcome, <?php echo $_SESSION['name']; ?> 👋</h2>
+    <p>Your email: <?php echo $_SESSION['email']; ?></p>
+    
+     <div class="modal fade" id="loginModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <form method="post" action="login.php">
@@ -105,15 +117,19 @@
         <div class="row">
             <div class="col-lg-12 bg-white shadow p-4 rounded">
                 <h5 class="mb-4">Check Futsal Availability</h5>
-                <form>
+                <form method="GET" action="view_futsal.php" target="_blank">
                     <div class="row align-items-center">
+
+                        <!-- Date -->
                         <div class="col-lg-3 mb-3">
                             <label class="form-label" style="font-weight: 500;">Check-in</label>
-                            <input type="date" class="form-control" shadow-none>
+                            <input type="date" name="booking_date" class="form-control" required>
                         </div>
+
+                        <!-- Time Slot -->
                         <div class="col-lg-3 mb-3">
                             <label class="form-label" style="font-weight: 500;">Select Time Slot</label>
-                            <select class="form-control" shadow-none>
+                            <select class="form-control" name="time_slot" required>
                                 <option value="">-- Select Time Slot --</option>
                                 <option value="6-7">6:00 AM - 7:00 AM</option>
                                 <option value="7-8">7:00 AM - 8:00 AM</option>
@@ -133,32 +149,34 @@
                             </select>
                         </div>
 
+                        <!-- Team Size -->
                         <div class="col-lg-3 mb-3">
-                            <form>
-                                <label class="form-label">Select Team Size for Side A</label>
-                                <div class="row">
-                                    <div class="col-lg-5">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="sideA_size" id="sideA_5" value="5">
-                                            <label class="form-check-label" for="sideA_5">
-                                                5 Players
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-5">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="sideA_size" id="sideA_7" value="7">
-                                            <label class="form-check-label" for="sideA_7">
-                                                7 Players
-                                            </label>
-                                        </div>
+                            <label class="form-label">Select Team Size for Side A</label>
+                            <div class="row">
+                                <div class="col-lg-5">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="sideA_size" id="sideA_5" value="5" required>
+                                        <label class="form-check-label" for="sideA_5">
+                                            5 Players
+                                        </label>
                                     </div>
                                 </div>
-                            </form>
+                                <div class="col-lg-5">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="sideA_size" id="sideA_7" value="7">
+                                        <label class="form-check-label" for="sideA_7">
+                                            7 Players
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+
+                        <!-- Save Button -->
                         <div class="col-lg-1">
-                            <button type="submit" class="btn btn-primary ">Save</button>
+                            <button type="submit" class="btn btn-primary mt-4">Save</button>
                         </div>
+
                     </div>
                 </form>
             </div>
@@ -201,10 +219,7 @@
                                     <label class="form-label">Phone Number</label>
                                     <input type="number" name="phone" class=" form-control" shadow-none>
                                 </div>
-                                <div class="col-md-6 p-0 mb-3">
-                                    <label class="form-label">Picture</label>
-                                    <input type="file" name="image" class="form-control" shadow-none>
-                                </div>
+                              
                                 <div class="col-md-12 p-0 mb-3">
                                     <label class="form-label">Address</label>
                                     <textarea class="form-control shadow-none" name="address" rows="1"></textarea>

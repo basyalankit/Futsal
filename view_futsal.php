@@ -1,3 +1,24 @@
+<?php
+require "conn.php";
+// $date=@$_GET['booking_date'];
+$time= explode('-',@$_GET['time_slot']??'23-00');
+
+$start=$time[0];
+$end = $time[1];
+
+$size = @$_GET['sideA_size'] ??0;
+            $start_time = (new DateTime("$start:00"))->format("H:i:s");
+            $end_time = (new DateTime("$end:00"))->format("H:i:s");
+$sql = "SELECT * FROM futsals WHERE open_at <= CAST('$start_time' AS TIME) AND close_at >= CAST('$end_time' AS TIME) AND num_players >= $size" ;
+$result = $conn->query($sql);
+if ($result === false) {
+    // Query failed
+    echo "Error: " . $conn->error;
+}
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -36,33 +57,43 @@
     <div class="container">
         <div class="row">
 
+            <?php while ($row = $result->fetch_assoc()): ?>
 
-            <div class="col-lg-4 col-md-6 my-3">
-                <div class="card border-0 shadow">
-                    <img src="image/bhak.jpg" class="card-img-top" alt="Futsal Ground">
-                    <div class="card-body">
-                        <h5 class="card-title">Bhaktapur Futsal</h5>
-                        <p class="card-text">Price ₹200</p>
-                        <a href="https://www.google.com/maps?q=MC96+P25, Araniko Highway, Suryabinayak 44800"
-                            target="_blank" class="btn btn-primary btn-sm">
-                            <i class="bi bi-geo-alt-fill"></i> View on Map
-                        </a>
-
+                <div class="col-lg-4 col-md-6 my-3">
+                    <div class="card border-0 shadow">
+                        <img src="data:image/jpeg;base64,<?php echo base64_encode($row['image'])  ?>" class="card-img-top" alt="Futsal Ground">
+                        <div class="card-body">
+                            <h5 class="card-title"><?php echo $row['name'] ?></h5>
+                            <p class="card-text">Price Rs <?php echo $row['price'] ?></p>
+                            <div class="d-flex justify-content-between">
+                                <a href="<?php echo $row['map_url'] ?>"
+                                    target="_blank" class="btn btn-primary btn-sm">
+                                    <i class="bi bi-geo-alt-fill"></i> View on Map
+                                </a>
+                                <a href="view_futsal.php?ground=Bhaktapur Futsal" class="btn btn-success btn-sm">
+                                    <i class="bi bi-calendar-check-fill"></i> Book Now
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
 
+            <?php endwhile; ?>
 
-            <div class="col-lg-4 col-md-6 my-3">
+            <!-- <div class="col-lg-4 col-md-6 my-3">
                 <div class="card border-0 shadow">
                     <img src="image/ground1.jpg" class="card-img-top" alt="Futsal Ground">
                     <div class="card-body">
                         <h5 class="card-title">Buddhanagar Futsal</h5>
-                        <p class="card-text">Price ₹300</p>
-                        <a href="https://www.google.com/maps?Kathmandu 44600" target="_blank" class="btn btn-primary btn-sm">
-                            <i class="bi bi-geo-alt-fill"></i> View on Map
-                        </a>
-
+                        <p class="card-text">Price Rs 300</p>
+                        <div class="d-flex justify-content-between">
+                            <a href="https://www.google.com/maps?Kathmandu 44600" target="_blank" class="btn btn-primary btn-sm">
+                                <i class="bi bi-geo-alt-fill"></i> View on Map
+                            </a>
+                            <a href="view_futsal.php?ground=Bhaktapur Futsal" class="btn btn-success btn-sm">
+                                <i class="bi bi-calendar-check-fill"></i> Book Now
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -71,12 +102,16 @@
                     <img src="image/maiti.jpg" class="card-img-top" alt="Futsal Ground">
                     <div class="card-body">
                         <h5 class="card-title">Maitidevi futsal</h5>
-                        <p class="card-text">Price ₹200</p>
-                        <a href="https://www.google.com/maps?P83P+9PH Maitidevi futsal, Kathmandu 44600"
-                            target="_blank" class="btn btn-primary btn-sm">
-                            <i class="bi bi-geo-alt-fill"></i> View on Map
-                        </a>
-
+                        <p class="card-text">Price Rs 200</p>
+                        <div class="d-flex justify-content-between">
+                            <a href="https://www.google.com/maps?P83P+9PH Maitidevi futsal, Kathmandu 44600"
+                                target="_blank" class="btn btn-primary btn-sm">
+                                <i class="bi bi-geo-alt-fill"></i> View on Map
+                            </a>
+                            <a href="view_futsal.php?ground=Bhaktapur Futsal" class="btn btn-success btn-sm">
+                                <i class="bi bi-calendar-check-fill"></i> Book Now
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -86,12 +121,16 @@
                     <img src="image/ooo.jpg" class="card-img-top" alt="Futsal Ground">
                     <div class="card-body">
                         <h5 class="card-title">Hattiban Futsal Headquarter</h5>
-                        <p class="card-text">Price ₹200</p>
-                        <a href="https://www.google.com/maps?Loha Chowk, Near Nakhipot Microstation Park, Nakhipot Line, Lalitpur 44700"
-                            target="_blank" class="btn btn-primary btn-sm">
-                            <i class="bi bi-geo-alt-fill"></i> View on Map
-                        </a>
-
+                        <p class="card-text">Price Rs 200</p>
+                        <div class="d-flex justify-content-between">
+                            <a href="https://www.google.com/maps?Loha Chowk, Near Nakhipot Microstation Park, Nakhipot Line, Lalitpur 44700"
+                                target="_blank" class="btn btn-primary btn-sm">
+                                <i class="bi bi-geo-alt-fill"></i> View on Map
+                            </a>
+                            <a href="view_futsal.php?ground=Bhaktapur Futsal" class="btn btn-success btn-sm">
+                                <i class="bi bi-calendar-check-fill"></i> Book Now
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -101,12 +140,16 @@
                     <img src="image/hamro.webp" class="card-img-top" alt="Futsal Ground">
                     <div class="card-body">
                         <h5 class="card-title">Euro Futsal</h5>
-                        <p class="card-text">Price ₹200</p>
-                        <a href="https://www.google.com/maps?Hariyo pool, Kathmandu 44600"
-                            target="_blank" class="btn btn-primary btn-sm">
-                            <i class="bi bi-geo-alt-fill"></i> View on Map
-                        </a>
-
+                        <p class="card-text">Price Rs 200</p>
+                        <div class="d-flex justify-content-between">
+                            <a href="https://www.google.com/maps?Hariyo pool, Kathmandu 44600"
+                                target="_blank" class="btn btn-primary btn-sm">
+                                <i class="bi bi-geo-alt-fill"></i> View on Map
+                            </a>
+                            <a href="view_futsal.php?ground=Bhaktapur Futsal" class="btn btn-success btn-sm">
+                                <i class="bi bi-calendar-check-fill"></i> Book Now
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -116,21 +159,25 @@
                     <img src="image/shank.webp" class="card-img-top" alt="Futsal Ground">
                     <div class="card-body">
                         <h5 class="card-title">Shankhamul Futsal</h5>
-                        <p class="card-text">Price ₹200</p>
-                        <a href="https://www.google.com/maps?Kathmandu 44600"
-                            target="_blank" class="btn btn-primary btn-sm">
-                            <i class="bi bi-geo-alt-fill"></i> View on Map
-                        </a>
-
+                        <p class="card-text">Price RS 200</p>
+                        <div class="d-flex justify-content-between">
+                            <a href="https://www.google.com/maps?Kathmandu 44600" target="_blank" class="btn btn-primary btn-sm">
+                                <i class="bi bi-geo-alt-fill"></i> View on Map
+                            </a>
+                            <a href="view_futsal.php?ground=Bhaktapur Futsal" class="btn btn-success btn-sm">
+                                <i class="bi bi-calendar-check-fill"></i> Book Now
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
+
         </div>
-    </div>
+    </div> -->
 
 
 
-    <?php require "footer.php"; ?>
+            <?php require "footer.php"; ?>
 
 
 
