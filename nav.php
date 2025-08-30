@@ -35,9 +35,9 @@
                 <li class="nav-item">
                     <a class="nav-link active me-2" aria-current="page" href="index.php">Home</a>
                 </li>
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                     <a class="nav-link me-2" href="view_futsal.php">View Futsal</a>
-                </li>
+                </li> -->
                 <li class="nav-item">
                     <a class="nav-link me-2" href="facility.php">Facilities</a>
                 </li>
@@ -58,9 +58,9 @@
                     <button type="button" class="btn btn-outline-dark shadow-none me-lg-3 me-2" data-bs-toggle="modal" data-bs-target="#loginModal">
                         Login
                     </button>
-                    <button type="button" class="btn btn-outline-dark shadow-none" data-bs-toggle="modal" data-bs-target="#registerModal">
+                    <!-- <button type="button" class="btn btn-outline-dark shadow-none" data-bs-toggle="modal" data-bs-target="#registerModal">
                         Register
-                    </button>
+                    </button> -->
                 </div>
             <?php endif; ?>
         </div>

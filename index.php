@@ -235,9 +235,9 @@ if (!isset($_SESSION['user_id'])) {
                                 </div>
                             </div>
                         </div>
-                        <div class="text-center my-1">
+                        <!-- <div class="text-center my-1">
                             <button type="submit" class="btn btn-dark shadow-none">REGISTER</button>
-                        </div>
+                        </div> -->
                 </form>
 
             </div>

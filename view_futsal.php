@@ -1,23 +1,34 @@
 <?php
 require "conn.php";
-// $date=@$_GET['booking_date'];
-$time= explode('-',@$_GET['time_slot']??'23-00');
 
-$start=$time[0];
+$time = explode('-', @$_GET['time_slot'] ?? '23-00');
+$start = $time[0];
 $end = $time[1];
 
-$size = @$_GET['sideA_size'] ??0;
-            $start_time = (new DateTime("$start:00"))->format("H:i:s");
-            $end_time = (new DateTime("$end:00"))->format("H:i:s");
-$sql = "SELECT * FROM futsals WHERE open_at <= CAST('$start_time' AS TIME) AND close_at >= CAST('$end_time' AS TIME) AND num_players >= $size" ;
+$size = @$_GET['sideA_size'] ?? 0;
+$start_time = (new DateTime("$start:00"))->format("H:i:s");
+$end_time = (new DateTime("$end:00"))->format("H:i:s");
+
+// Booking date (from user or today)
+$booking_date = $_GET['booking_date'] ?? date("Y-m-d");
+
+// Fetch only available futsals
+$sql = "SELECT * FROM futsals f
+        WHERE f.open_at <= CAST('$start_time' AS TIME)
+          AND f.close_at >= CAST('$end_time' AS TIME)
+          AND f.num_players >= $size
+          AND f.id NOT IN (
+              SELECT b.futsal_id FROM bookings b
+              WHERE b.date = '$booking_date'
+                AND (
+                      (b.start_time <= '$start_time' AND b.end_time > '$start_time') OR
+                      (b.start_time < '$end_time' AND b.end_time >= '$end_time') OR
+                      ('$start_time' <= b.start_time AND '$end_time' >= b.end_time)
+                    )
+          )";
+
 $result = $conn->query($sql);
-if ($result === false) {
-    // Query failed
-    echo "Error: " . $conn->error;
-}
-
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -25,16 +36,12 @@ if ($result === false) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>fgdfg</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <link href="https://fonts.googleapis.com/css2?family=Merienda:wght@300..900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Available Futsals</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-
     <style>
         .card {
             max-width: 250px;
-            /* keep all cards same width */
             margin: auto;
             text-align: left;
         }
@@ -42,14 +49,10 @@ if ($result === false) {
         .card-img-top {
             width: 100%;
             height: 180px;
-            /* fix height (you can change to 200px, 220px etc.) */
             object-fit: cover;
-            /* crop & keep proportion */
             border-radius: 6px;
-            /* optional */
         }
     </style>
-
 </head>
 
 <body>
@@ -57,130 +60,42 @@ if ($result === false) {
     <div class="container">
         <div class="row">
 
-            <?php while ($row = $result->fetch_assoc()): ?>
+            <?php if ($result === false): ?>
+                <p class="text-danger">❌ SQL Error: <?php echo $conn->error; ?></p>
 
-                <div class="col-lg-4 col-md-6 my-3">
-                    <div class="card border-0 shadow">
-                        <img src="data:image/jpeg;base64,<?php echo base64_encode($row['image'])  ?>" class="card-img-top" alt="Futsal Ground">
-                        <div class="card-body">
-                            <h5 class="card-title"><?php echo $row['name'] ?></h5>
-                            <p class="card-text">Price Rs <?php echo $row['price'] ?></p>
-                            <div class="d-flex justify-content-between">
-                                <a href="<?php echo $row['map_url'] ?>"
-                                    target="_blank" class="btn btn-primary btn-sm">
-                                    <i class="bi bi-geo-alt-fill"></i> View on Map
-                                </a>
-                                <a href="view_futsal.php?ground=Bhaktapur Futsal" class="btn btn-success btn-sm">
-                                    <i class="bi bi-calendar-check-fill"></i> Book Now
-                                </a>
+            <?php elseif ($result->num_rows > 0): ?>
+                <?php while ($row = $result->fetch_assoc()): ?>
+                    <div class="col-lg-4 col-md-6 my-3">
+                        <div class="card border-0 shadow">
+                            <img src="data:image/jpeg;base64,<?php echo base64_encode($row['image']) ?>" class="card-img-top" alt="Futsal Ground">
+                            <div class="card-body">
+                                <h5 class="card-title"><?php echo $row['name'] ?></h5>
+                                <p class="card-text">Price Rs <?php echo $row['price'] ?></p>
+                                <div class="d-flex justify-content-between">
+                                    <a href="<?php echo $row['map_url'] ?>" target="_blank" class="btn btn-primary btn-sm">
+                                        <i class="bi bi-geo-alt-fill"></i> View on Map
+                                    </a>
+                                    <form method="POST" action="book.php">
+                                        <input type="hidden" name="futsal_id" value="<?php echo $row['id']; ?>">
+                                        <input type="hidden" name="date" value="<?php echo $booking_date; ?>">
+                                        <input type="hidden" name="start_time" value="<?php echo $start_time; ?>">
+                                        <input type="hidden" name="end_time" value="<?php echo $end_time; ?>">
+                                        <button type="submit" class="btn btn-success btn-sm">
+                                            <i class="bi bi-calendar-check-fill"></i> Book Now
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-
-            <?php endwhile; ?>
-
-            <!-- <div class="col-lg-4 col-md-6 my-3">
-                <div class="card border-0 shadow">
-                    <img src="image/ground1.jpg" class="card-img-top" alt="Futsal Ground">
-                    <div class="card-body">
-                        <h5 class="card-title">Buddhanagar Futsal</h5>
-                        <p class="card-text">Price Rs 300</p>
-                        <div class="d-flex justify-content-between">
-                            <a href="https://www.google.com/maps?Kathmandu 44600" target="_blank" class="btn btn-primary btn-sm">
-                                <i class="bi bi-geo-alt-fill"></i> View on Map
-                            </a>
-                            <a href="view_futsal.php?ground=Bhaktapur Futsal" class="btn btn-success btn-sm">
-                                <i class="bi bi-calendar-check-fill"></i> Book Now
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 my-3">
-                <div class="card border-0 shadow">
-                    <img src="image/maiti.jpg" class="card-img-top" alt="Futsal Ground">
-                    <div class="card-body">
-                        <h5 class="card-title">Maitidevi futsal</h5>
-                        <p class="card-text">Price Rs 200</p>
-                        <div class="d-flex justify-content-between">
-                            <a href="https://www.google.com/maps?P83P+9PH Maitidevi futsal, Kathmandu 44600"
-                                target="_blank" class="btn btn-primary btn-sm">
-                                <i class="bi bi-geo-alt-fill"></i> View on Map
-                            </a>
-                            <a href="view_futsal.php?ground=Bhaktapur Futsal" class="btn btn-success btn-sm">
-                                <i class="bi bi-calendar-check-fill"></i> Book Now
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6 my-3">
-                <div class="card border-0 shadow">
-                    <img src="image/ooo.jpg" class="card-img-top" alt="Futsal Ground">
-                    <div class="card-body">
-                        <h5 class="card-title">Hattiban Futsal Headquarter</h5>
-                        <p class="card-text">Price Rs 200</p>
-                        <div class="d-flex justify-content-between">
-                            <a href="https://www.google.com/maps?Loha Chowk, Near Nakhipot Microstation Park, Nakhipot Line, Lalitpur 44700"
-                                target="_blank" class="btn btn-primary btn-sm">
-                                <i class="bi bi-geo-alt-fill"></i> View on Map
-                            </a>
-                            <a href="view_futsal.php?ground=Bhaktapur Futsal" class="btn btn-success btn-sm">
-                                <i class="bi bi-calendar-check-fill"></i> Book Now
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6 my-3">
-                <div class="card border-0 shadow">
-                    <img src="image/hamro.webp" class="card-img-top" alt="Futsal Ground">
-                    <div class="card-body">
-                        <h5 class="card-title">Euro Futsal</h5>
-                        <p class="card-text">Price Rs 200</p>
-                        <div class="d-flex justify-content-between">
-                            <a href="https://www.google.com/maps?Hariyo pool, Kathmandu 44600"
-                                target="_blank" class="btn btn-primary btn-sm">
-                                <i class="bi bi-geo-alt-fill"></i> View on Map
-                            </a>
-                            <a href="view_futsal.php?ground=Bhaktapur Futsal" class="btn btn-success btn-sm">
-                                <i class="bi bi-calendar-check-fill"></i> Book Now
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6 my-3">
-                <div class="card border-0 shadow">
-                    <img src="image/shank.webp" class="card-img-top" alt="Futsal Ground">
-                    <div class="card-body">
-                        <h5 class="card-title">Shankhamul Futsal</h5>
-                        <p class="card-text">Price RS 200</p>
-                        <div class="d-flex justify-content-between">
-                            <a href="https://www.google.com/maps?Kathmandu 44600" target="_blank" class="btn btn-primary btn-sm">
-                                <i class="bi bi-geo-alt-fill"></i> View on Map
-                            </a>
-                            <a href="view_futsal.php?ground=Bhaktapur Futsal" class="btn btn-success btn-sm">
-                                <i class="bi bi-calendar-check-fill"></i> Book Now
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                <?php endwhile; ?>
+            <?php else: ?>
+                <p class="text-danger">❌ No futsals available for this time slot.</p>
+            <?php endif; ?>
 
         </div>
-    </div> -->
-
-
-
-            <?php require "footer.php"; ?>
-
-
-
+    </div>
+    <?php require "footer.php"; ?>
 </body>
 
 </html>
